@@ -1,9 +1,9 @@
 import {Assets, FillGradient} from "pixi.js";
 
 export const gameSetting = {
-    GAME_WIDTH: 800,
-    GAME_HEIGHT: 600,
-    LAND_HEIGHT: 100,
+    GAME_WIDTH: 250,
+    GAME_HEIGHT: 400,
+    LAND_HEIGHT: 50,
     gradient: new FillGradient({
         type: 'linear',
         colorStops: [
@@ -12,5 +12,5 @@ export const gameSetting = {
             {offset: 1, color: '#5C3317'}
         ],
     }),
-    texture: Assets.load('/ball.png'),
+    texture: Assets.get("/ball.png")
 }
