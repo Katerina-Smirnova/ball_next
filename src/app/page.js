@@ -1,4 +1,3 @@
-
 import GameWrapper from "@/app/GameWrapper";
 
 export default function Home() {
