@@ -10,14 +10,15 @@ export default function GameWrapper() {
     const loading = useSelector((state) => state.data.isLoading);
     const container = useRef(null)
     useEffect(() => {
-        if (loading || !data.length) return;
-        const game = new Game(data);
-        game.init(container.current);
-        console.log("Game init");
-        // return () => {
-        //     game.destroy()
-        // }
-    }, [loading]);
+        if (loading || !data.length || !container.current) return;
+        const game = new Game();
+        (async () => {
+            await game.init(container.current);
+        })();
+        return () => {
+            game.destroy();
+        };
+    }, [loading, data]);
     return (
         <>
             <div ref={container}/>

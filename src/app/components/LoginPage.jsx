@@ -4,22 +4,37 @@ import login from "@/app/api/userServer";
 import {useState} from "react";
 import {useDispatch} from "react-redux";
 import {loginUser} from "@/app/features/user/usersSlice";
-import { useRouter } from 'next/navigation';
+import {useRouter} from 'next/navigation';
 
 
 export default function LoginPage() {
     const [user, setUser] = useState({username: "", password: ""});
+    const [error, setError] = useState('');
     const dispatch = useDispatch();
     const router = useRouter();
 
     async function handleSubmit(e) {
         e.preventDefault();
-        const token = await login(user);
-        if (token) {
-            dispatch(loginUser(token));
-            router.replace('/game')
+        if (!user.username.trim() || !user.password.trim()) {
+            setError("Пожалуйста, заполните все поля.");
+            return;
         }
+        try {
+            const result = await login(user);
+            if (result.success) {
+                dispatch(loginUser(result));
+                router.replace('/game')
+            } else {
+                setError(result.error);
+            }
+
+        } catch
+            (err) {
+            setError("Произошла непредвиденная ошибка. Попробуйте еще раз.");
+        }
+
     }
+
     return (
         <form onSubmit={handleSubmit}>
             <input
@@ -46,7 +61,11 @@ export default function LoginPage() {
                     })
                 }
             />
-
+            {error && (
+                <div className="error-message">
+                    {error}
+                </div>
+            )}
             <button type="submit">Login</button>
         </form>
     );

@@ -4,19 +4,21 @@ import {gameSetting} from "@/app/ball/gameSetting";
 import animation from "@/app/ball/animation";
 
 export class Game {
-    constructor(data) {
+    constructor() {
         this.app = null;
         this.world = null;
         this.land = null;
         this.spriteBall = null;
         this.isJumping = false;
+        this.destroyed = false;
     }
+
     async init(container) {
-        window.addEventListener("resize", () => {
-            this.resizeCanvas();
-        });
-        this.app = new Application();
-        await this.app.init({
+        this.destroyed = false;
+        this.resizeHandler = this.resizeCanvas.bind(this);
+        window.addEventListener("resize", this.resizeHandler);
+        const app = new Application();
+        await app.init({
             width: gameSetting.GAME_WIDTH,
             height: gameSetting.GAME_HEIGHT,
             backgroundAlpha: 0,
@@ -25,6 +27,13 @@ export class Game {
             autoDensity: true,
             roundPixels: true,
         });
+        if (this.destroyed) {
+            app.destroy(true);
+            return;
+        }
+
+        this.app = app;
+
         container.appendChild(this.app.canvas);
 
         this.world = new Container()
@@ -36,15 +45,31 @@ export class Game {
         this.resizeCanvas();
     }
 
+    destroy() {
+        this.destroyed = true;
+        window.removeEventListener("resize", this.resizeHandler);
+        gsap.killTweensOf("*");
+        if (this.spriteBall) {
+            this.spriteBall.off("click");
+            gsap.killTweensOf(this.spriteBall);
+            this.spriteBall = null;
+        }
+        if (this.app) {
+            this.app.destroy(true);
+            this.app = null;
+        }
+        this.world = null;
+        this.land = null;
+        this.isJumping = false;
+    }
+
 
     resizeCanvas() {
         if (!this.world) return;
-        const scale = Math.min(window.innerWidth / gameSetting.GAME_WIDTH, window.innerHeight / Game.GAME_HEIGHT);
+        const scale = Math.min(window.innerWidth / gameSetting.GAME_WIDTH, window.innerHeight / gameSetting.GAME_HEIGHT);
         this.app.canvas.style.width = `${gameSetting.GAME_WIDTH * scale}px`;
         this.app.canvas.style.height = `${gameSetting.GAME_HEIGHT * scale}px`;
         this.app.canvas.style.position = "absolute";
-        this.app.canvas.style.left = `${(window.innerWidth - gameSetting.GAME_WIDTH * scale) / 2}px`;
-        this.app.canvas.style.top = `${(window.innerHeight - gameSetting.GAME_HEIGHT * scale) / 2}px`;
     }
 
     createLand() {
