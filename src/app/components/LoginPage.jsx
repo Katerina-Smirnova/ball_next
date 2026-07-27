@@ -19,20 +19,13 @@ export default function LoginPage() {
             setError("Пожалуйста, заполните все поля.");
             return;
         }
-        try {
-            const result = await login(user);
-            if (result.success) {
-                dispatch(loginUser(result));
-                router.replace('/game')
-            } else {
-                setError(result.error);
-            }
-
-        } catch
-            (err) {
-            setError("Произошла непредвиденная ошибка. Попробуйте еще раз.");
+        const result = await login(user);
+        if (result.success) {
+            dispatch(loginUser(result));
+            router.replace('/game')
+        } else {
+            setError(result.error);
         }
-
     }
 
     return (

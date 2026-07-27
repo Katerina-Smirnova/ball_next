@@ -1,6 +1,6 @@
 "use client";
 
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
 import fetchData from "@/app/features/data/dataThunk";
 import {Assets} from "pixi.js";

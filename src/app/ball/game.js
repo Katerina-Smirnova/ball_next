@@ -1,4 +1,4 @@
-import {Application, Container, Graphics, Sprite, Text} from "pixi.js";
+import {Application, Container, Graphics, Sprite} from "pixi.js";
 import gsap from "gsap";
 import {gameSetting} from "@/app/ball/gameSetting";
 import animation from "@/app/ball/animation";
@@ -9,7 +9,6 @@ export class Game {
         this.world = null;
         this.land = null;
         this.spriteBall = null;
-        this.isJumping = false;
         this.destroyed = false;
     }
 
@@ -60,16 +59,13 @@ export class Game {
         }
         this.world = null;
         this.land = null;
-        this.isJumping = false;
     }
-
-
     resizeCanvas() {
         if (!this.world) return;
-        const scale = Math.min(window.innerWidth / gameSetting.GAME_WIDTH, window.innerHeight / gameSetting.GAME_HEIGHT);
+        const scale = Math.min((window.innerWidth / gameSetting.GAME_WIDTH)/2,( window.innerHeight / gameSetting.GAME_HEIGHT)/2);
         this.app.canvas.style.width = `${gameSetting.GAME_WIDTH * scale}px`;
         this.app.canvas.style.height = `${gameSetting.GAME_HEIGHT * scale}px`;
-        this.app.canvas.style.position = "absolute";
+        this.app.canvas.style.position = "relative";
     }
 
     createLand() {
@@ -90,16 +86,6 @@ export class Game {
         this.spriteBall.y = this.land.y + Math.floor(this.spriteBall.height / 1.7);
         this.spriteBall.eventMode = 'static'
         this.world.addChild(this.spriteBall);
-        this.spriteBall.on('click', () => {
-            if (this.isJumping) return;
-            this.isJumping = true;
-            const timeline = gsap.timeline({
-                onComplete: () => {
-                    this.isJumping = false;
-                }
-            });
-            animation(this.spriteBall, timeline)
-        })
-
+        animation(this.spriteBall)
     }
 }

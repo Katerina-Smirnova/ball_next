@@ -17,14 +17,6 @@ const userSlice = createSlice({
             state.userPassword = action.payload.userPassword;
             state.accessToke = action.payload.accessToke;
             state.refreshToken = action.payload.refreshToken;
-        },
-        logoutUser: (state, action) => {
-            state.id = null;
-            state.userName = null;
-            state.userPassword = null;
-            state.accessToke = null;
-            state.refreshToken = null;
-
         }
     }
 })

@@ -3,23 +3,29 @@ import {store} from "@/app/store";
 import {setText} from "@/app/features/text/textSlice";
 import {gameSetting} from "@/app/ball/gameSetting";
 
-export default function animation(spriteBall, timeline){
+export default function animation(spriteBall) {
     const state = store.getState();
-    const data = state.data.data
-    const texts = [];
-    while (texts.length < data.length) {
-        const item = data[Math.floor(Math.random() * data.length)];
-        if (!texts.includes(item.title)) {
-            texts.push(item.title);
-        }
-    }
-    texts.forEach((text) => {
-        timeline.call(() => {
-            store.dispatch(setText(text));
-        });
-        timeline.add(jump(spriteBall, gameSetting.GAME_HEIGHT / 2, 1, 1.6));
-    });
+    const data = state.data.data;
+    const text = state.text.text
+    const users = new Set();
+    users.add(text)
+    let isJumping = false;
+
+    spriteBall.on('click', () => {
+        if (isJumping) return;
+        isJumping = true;
+        let item
+        do{
+            item = data[Math.floor(Math.random() * data.length)];
+        }while (users.has(item))
+        users.add(item)
+        let text = item.title
+        gsap.timeline({onComplete:(() => isJumping = false)})
+            .add(jump(spriteBall, gameSetting.GAME_HEIGHT / 2, 1, 1.6))
+            .call(()=>store.dispatch(setText(text)))
+    })
 }
+
 function jump(spriteBall, height, squash, time) {
     const startY = spriteBall.y;
     const baseSize = spriteBall.baseSize;
