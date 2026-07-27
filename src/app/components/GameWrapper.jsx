@@ -24,10 +24,10 @@ export default function GameWrapper() {
         };
     }, [loading, data]);
     return (
-        <>
+        <div className={"game-wrapper"}>
             <div ref={container}/>
             <TextWrapper/>
-        </>
+        </div>
     )
 }
 

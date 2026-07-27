@@ -29,7 +29,7 @@ export default function LoginPage() {
     }
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form className={"form_login"} onSubmit={handleSubmit}>
             <input
                 type="text"
                 name="username"
