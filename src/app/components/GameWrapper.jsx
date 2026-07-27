@@ -11,6 +11,7 @@ export default function GameWrapper() {
     const loading = useSelector((state) => state.data.isLoading);
     const container = useRef(null)
     const dispatch = useDispatch();
+
     useEffect(() => {
         if (loading || !data.length || !container.current) return;
         const game = new Game();
